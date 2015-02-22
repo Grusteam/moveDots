@@ -1,0 +1,26 @@
+{
+    "name": "app",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "steamdrive.ru",
+    "license": "ISC",
+    "devDependencies": {
+        "gulp": "^3.8.1",
+        "gulp-autoprefixer": "*",
+        "gulp-connect": "*",
+        "gulp-cssmin": "*",
+        "gulp-imagemin": "*",
+        "gulp-sass": "*",
+        "gulp-less": "*",
+        "gulp-sourcemaps": "*",
+        "gulp-uglify": "*",
+        "gulp-watch": "*",
+        "imagemin-pngquant": "*",
+        "opn": "*",
+        "rimraf": "*"
+    }
+}
