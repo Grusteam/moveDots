@@ -1,10 +1,3 @@
-/*
- * Third party
- */
-//= ../../bower_components/jquery/dist/jquery.js
+$(function() {
 
-
-/*
- * Custom
- */
-//= partials/app.js
+});
