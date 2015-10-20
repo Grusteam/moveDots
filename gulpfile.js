@@ -1,17 +1,19 @@
 'use strict';
 
 var gulp = require('gulp'),
+    cssmin = require('gulp-cssmin'),
+    connect = require('gulp-connect'),
     less = require('gulp-less'),
+    opn = require('opn'),
     prefixer = require('gulp-autoprefixer'),
     prefixerOptions = { browsers: ['last 4 versions'] },
-    sourcemaps = require('gulp-sourcemaps'),
-    imagemin = require('gulp-imagemin'),
-    pngquant = require('imagemin-pngquant'),
+    rigger = require('gulp-rigger'),
     rimraf = require('rimraf'),
-    connect = require('gulp-connect'),
-    opn = require('opn'),
-    rigger = require('gulp-rigger');
-    
+    sourcemaps = require('gulp-sourcemaps'),
+    sequence = require('run-sequence'),
+    uglify = require('gulp-uglify'),
+    useref = require('gulp-useref');
+
 var path = {
     build: { //Тут мы укажем куда складывать готовые после сборки файлы
         html: 'build/',
@@ -25,11 +27,12 @@ var path = {
     src: { //Пути откуда брать исходники
         html: 'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
         js: 'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
-        data: 'src/data/*.json', //Папка для тестовых данных в формате json 
+        data: 'src/data/*.json', //Папка для тестовых данных в формате json
         styles: 'src/styles/main.less',
-        content: 'src/content/**/*.*', 
+        content: 'src/content/**/*.*',
         images: 'src/images/**/*.*', //Синтаксис images/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
-        fonts: 'src/fonts/**/*.*'
+        fonts: 'src/fonts/**/*.*',
+        favicon: 'src/favicon.png'
     },
     watch: { //Тут мы укажем, за изменением каких файлов мы хотим наблюдать
         html: 'src/**/*.html',
@@ -52,14 +55,17 @@ gulp.task('html:build', function () {
         .pipe(rigger())
         .pipe(gulp.dest(path.build.html)) //Выплюнем их в папку build
         .pipe(connect.reload()); //И перезагрузим наш сервер для обновлений
+
+    gulp.src(path.src.favicon)
+        .pipe(gulp.dest('build/'));
 });
 
 gulp.task('style:build', function () {
-    gulp.src(path.src.styles) //Выберем наш main.less
+    gulp.src(path.src.styles) //Выберем наш styles.less
         .pipe(sourcemaps.init()) //То же самое что и с js
         .pipe(less()) //Скомпилируем
+        .pipe(prefixer(prefixerOptions))
         .pipe(sourcemaps.write())
-        //.pipe(prefixer(prefixerOptions))
         .pipe(gulp.dest(path.build.styles)) //И в build
         .pipe(connect.reload());
 });
@@ -71,22 +77,10 @@ gulp.task('fonts:build', function() {
 
 gulp.task('image:build', function () {
     gulp.src(path.src.images) //Выберем наши картинки
-        .pipe(imagemin({ //Сожмем их
-            progressive: true,
-            svgoPlugins: [{removeViewBox: false}],
-            use: [pngquant()],
-            interlaced: true
-        }))
         .pipe(gulp.dest(path.build.images)) //И бросим в build
         .pipe(connect.reload());
 
     gulp.src(path.src.content) //Выберем наши картинки
-        .pipe(imagemin({ //Сожмем их
-            progressive: true,
-            svgoPlugins: [{removeViewBox: false}],
-            use: [pngquant()],
-            interlaced: true
-        }))
         .pipe(gulp.dest(path.build.content)) //И бросим в build
         .pipe(connect.reload());
 });
@@ -94,7 +88,7 @@ gulp.task('image:build', function () {
 gulp.task('js:build', function () {
     gulp.src(path.src.data) //Найдем наш main файл
         .pipe(gulp.dest(path.build.data));
-    
+
     gulp.src(path.src.js) //Найдем наш main файл
         .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
         .pipe(connect.reload()); //И перезагрузим сервер
@@ -128,7 +122,6 @@ gulp.task('watch', function(){
 
 gulp.task('clean', function (cb) {
     rimraf(path.clean, cb);
-    gulp.start('build');
 });
 
 gulp.task('openbrowser', function() {

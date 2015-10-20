@@ -10,14 +10,17 @@
   "license": "ISC",
   "dependencies": {
     "gulp": "^3.8.1",
+    "gulp-autoprefixer": "2.3.0",
     "gulp-connect": "*",
+    "gulp-cssmin": "*",
     "gulp-less": "*",
-    "gulp-imagemin": "*",
+    "gulp-rename": "^1.2.0",
     "gulp-rigger": "*",
-    "gulp-autoprefixer": "*",
     "gulp-sourcemaps": "*",
-    "imagemin-pngquant": "*",
+    "gulp-uglify": "*",
+    "gulp-useref": "^1.1.1",
     "opn": "*",
-    "rimraf": "*"
+    "rimraf": "*",
+    "run-sequence": "^1.1.2"
   }
 }
