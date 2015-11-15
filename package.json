@@ -17,7 +17,6 @@
     "gulp-rename": "^1.2.0",
     "gulp-rigger": "*",
     "gulp-sourcemaps": "*",
-    "gulp-uglify": "*",
     "gulp-useref": "^1.1.1",
     "opn": "*",
     "rimraf": "*",

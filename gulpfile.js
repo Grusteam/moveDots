@@ -11,7 +11,6 @@ var gulp = require('gulp'),
     rimraf = require('rimraf'),
     sourcemaps = require('gulp-sourcemaps'),
     sequence = require('run-sequence'),
-    uglify = require('gulp-uglify'),
     useref = require('gulp-useref');
 
 var path = {
@@ -28,7 +27,7 @@ var path = {
         html: 'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
         js: 'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
         data: 'src/data/*.json', //Папка для тестовых данных в формате json
-        styles: 'src/styles/main.less',
+        styles: 'src/styles/*.less',
         content: 'src/content/**/*.*',
         images: 'src/images/**/*.*', //Синтаксис images/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
         fonts: 'src/fonts/**/*.*',
