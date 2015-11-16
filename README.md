@@ -1,29 +1,17 @@
-# README #
+# Installation #
 
-This README would normally document whatever steps are necessary to get your application up and running.
+In folder with ```package.json``` run next commands in cmd/powershell with Admin rights:
 
-### What is this repository for? ###
+```npm install```
 
-* Quick summary
-* Version
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+```bower install```
 
-### How do I get set up? ###
+If you have not installed Gulp, install it globally:
 
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
+```npm install gulp -g```
 
-### Contribution guidelines ###
+After finishing all installations, run project with one of two commands:
 
-* Writing tests
-* Code review
-* Other guidelines
+```gulp open```
 
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
+```gulp run```
