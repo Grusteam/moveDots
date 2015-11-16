@@ -12,6 +12,6 @@ If you have not installed Gulp, install it globally:
 
 After finishing all installations, run project with one of two commands:
 
-```gulp open```
+```gulp open``` - will open new window in default browser
 
-```gulp run```
+```gulp```
