@@ -1,0 +1,31 @@
+{
+  "name": "Project",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "steamdrive.ru",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "react": "^15.3.2"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.5.1",
+    "browser-sync": "^2.17.5",
+    "gulp": "^3.9.1",
+    "gulp-clean-css": "^2.0.13",
+    "gulp-concat": "^2.6.0",
+    "gulp-dest-clean": "^0.5.0",
+    "gulp-imagemin": "^3.1.0",
+    "gulp-npm-files": "^0.1.3",
+    "gulp-postcss": "^6.2.0",
+    "gulp-resolve-dependencies": "^2.2.0",
+    "gulp-rigger": "^0.5.8",
+    "gulp-sourcemaps": "^2.2.0",
+    "gulp-stylelint": "^3.4.0",
+    "precss": "^1.4.0"
+  }
+}
