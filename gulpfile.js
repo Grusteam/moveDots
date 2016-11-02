@@ -1,16 +1,13 @@
 'use strict';
 
 var gulp = require('gulp'),
-    fs = require('fs'),
     cleanCSS = require('gulp-clean-css'),
     rigger = require('gulp-rigger'),
     clean = require('gulp-dest-clean'),
     postcss = require('gulp-postcss'),
     sourcemaps = require('gulp-sourcemaps'),
-    gulpStylelint = require('gulp-stylelint'),
     imagemin = require('gulp-imagemin'),
     gnf = require('gulp-npm-files'),
-    // useref = require('gulp-useref'),
     browserSync = require('browser-sync').create();
 // Пути
 var path = {
@@ -134,36 +131,5 @@ gulp.task('image', function() {
         .pipe(imagemin())
         .pipe(gulp.dest(path.build.images))
 });
-// var modConcat = require("node-module-concat");
-// var outputFile = "./build/main.js";
-// var resolveDependencies = require('gulp-resolve-dependencies');
-// var concat = require('gulp-concat');
-// gulp.task('dep', function() {
-//     // gulp.src(gnf(), {base:'./'})
-//     // modConcat(gnf(), outputFile, function(err, files) {
-//     //     if(err) throw err;
-//     //     console.log(files.length + " were combined into " + outputFile);
-//     // })
-//     // .pipe(gulp.dest('./build/vendor'));
-//     var paths = gnf();
-    
-//     for (var i = 0; i < paths.length; i++) {
-//         console.log(paths[i].slice(paths[i].length - 5));
-//     }
-    
-    
-//     console.log('paths', paths);
-    
-//     gulp.src(gnf(), {base:'./dist'})
-//     .pipe(resolveDependencies({
-//       pattern: /\* @requires [\s-]*(.*\.min.js)/g
-//     }))
-//     .on('error', function(err) {
-//         console.log(err.message);
-//     })
-//     .pipe(concat('vendor.js'))
-//     .pipe(gulp.dest('./build/vendor'));
-    
-// });
 // Команда Gulp
 gulp.task('default', ['build', 'server', 'watch']);
