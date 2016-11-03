@@ -9,6 +9,8 @@
   "author": "steamdrive.ru",
   "license": "ISC",
   "dependencies": {
+    "fancybox": "^3.0.0",
+    "jquery": "^3.1.1",
     "slick-carousel": "^1.6.0"
   },
   "devDependencies": {
