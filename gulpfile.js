@@ -1,46 +1,52 @@
 'use strict';
+
 // Поключение зависимостей
-var gulp = require('gulp'),
-    cleanCSS = require('gulp-clean-css'),
-    rigger = require('gulp-rigger'),
-    clean = require('gulp-dest-clean'),
-    postcss = require('gulp-postcss'),
-    sourcemaps = require('gulp-sourcemaps'),
-    imagemin = require('gulp-imagemin'),
-    gnf = require('gulp-npm-files'),
+var gulp        = require('gulp'),
+    cleanCSS    = require('gulp-clean-css'),
+    rigger      = require('gulp-rigger'),
+    postcss     = require('gulp-postcss'),
+    sourcemaps  = require('gulp-sourcemaps'),
+    imagemin    = require('gulp-imagemin'),
+    gnf         = require('gulp-npm-files'),
+    rimraf      = require('rimraf'),
     browserSync = require('browser-sync').create();
+    
 // Пути
 var path = {
     build: { //Тут мы укажем куда складывать готовые после сборки файлы
-        html: 'build/',
-        js: 'build/js/',
-        data: 'build/data/',
-        styles: 'build/styles/',
+        html:    'build/',
+        js:      'build/js/',
+        data:    'build/data/',
+        styles:  'build/styles/',
         content: 'build/content/',
-        images: 'build/images/',
-        fonts: 'build/fonts/',
+        images:  'build/images/',
+        fonts:   'build/fonts/',
         modules: 'build/node_modules'
     },
+    
     src: { //Пути откуда брать исходники
-        html: 'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
-        js: 'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
-        data: 'src/data/*.json', //Папка для тестовых данных в формате json
-        styles: 'src/styles/*.css',
+        html:    'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
+        js:      'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
+        data:    'src/data/*.json', //Папка для тестовых данных в формате json
+        styles:  'src/styles/*.css',
         content: 'src/content/**/*.*',
-        images: 'src/images/**/*.*', //Синтаксис images/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
-        fonts: 'src/fonts/**/*.*',
+        images:  'src/images/**/*.*', //Синтаксис images/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
+        fonts:   'src/fonts/**/*.*',
         favicon: 'src/favicon.png'
     },
+    
     watch: { //Тут мы укажем, за изменением каких файлов мы хотим наблюдать
-        html: 'src/**/*.html',
-        js: 'src/js/**/*.js',
-        data: 'src/data/*.json',
+        html:   'src/**/*.html',
+        js:     'src/js/**/*.js',
+        data:   'src/data/*.json',
         styles: 'src/styles/**/*.css',
         images: 'src/images/**/*.*',
-        fonts: 'src/fonts/**/*.*'
+        fonts:  'src/fonts/**/*.*'
     },
+    
     clean: './build'
 };
+
 // Сборка html и фавикон
 gulp.task('html:build', function () {
     gulp.src(path.src.html) //Выберем файлы по нужному пути
@@ -51,6 +57,7 @@ gulp.task('html:build', function () {
     gulp.src(path.src.favicon)
         .pipe(gulp.dest('build/'));
 });
+
 // Сборка стилей
 gulp.task('style:build', function () {
     gulp.src(path.src.styles)
@@ -61,12 +68,14 @@ gulp.task('style:build', function () {
         .pipe(gulp.dest(path.build.styles))
         .pipe(browserSync.stream());
 });
+
 // Сборка шрифтов
 gulp.task('fonts:build', function() {
     gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.build.fonts))
         .pipe(browserSync.stream());
 });
+
 // Сборка и сжатие изображений
 gulp.task('image:build', function () {
     gulp.src(path.src.images) //Выберем наши картинки
@@ -77,6 +86,7 @@ gulp.task('image:build', function () {
         .pipe(gulp.dest(path.build.content)) //И бросим в build
         .pipe(browserSync.stream());
 });
+
 // Сборка js и json
 gulp.task('js:build', function () {
     gulp.src(path.src.data) //Найдем наш main файл
@@ -87,15 +97,17 @@ gulp.task('js:build', function () {
         .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
         .pipe(browserSync.stream());
 });
+
 // Перенос зависимостей в build
-gulp.task('clean-module', function() {
-    return gulp.src(path.build.modules)
-        .pipe(clean(path.build.modules));
+gulp.task('clean-module', function (cb) {
+    return rimraf(path.build.modules, cb);
 });
+
 gulp.task('module', ['clean-module'], function() {
     gulp.src(gnf(), {base:'./'})
         .pipe(gulp.dest('./build'));
 });
+
 gulp.task('re-module', ['module'], function() {
     gulp.src('./package.json')
         .pipe(browserSync.stream());
@@ -108,23 +120,31 @@ gulp.task('build', [
     'style:build',
     'fonts:build',
     'image:build',
-    'module'
+    're-module'
 ]);
+
 // Отслеживание изменений файлов
-gulp.task('watch', function(){
+gulp.task('watch', ['server'], function(){
     gulp.watch([path.watch.html], ['html:build']);
     gulp.watch([path.watch.styles], ['style:build']);
     gulp.watch([path.watch.js, path.watch.data], ['js:build']);
     gulp.watch([path.watch.images], ['image:build']);
     gulp.watch([path.watch.fonts], ['fonts:build']);
-    gulp.watch('./package.json', ['re-module']);
+    
+    gulp.watch('./package.json', function(event) {
+        if (event.path.indexOf('package.json') > -1) {
+            gulp.start('re-module');
+        }
+    });
 });
-// Очистка папки build
-gulp.task('clean', function () {
-    gulp.src(path.clean).pipe(clean(path.clean));
+
+// Удаление папки build
+gulp.task('clean', function (cb) {
+    rimraf(path.clean, cb);
 });
+
 // Запуск сервера
-gulp.task('server', function() {
+gulp.task('server', ['build'], function() {
     browserSync.init({ 
         server: {
             baseDir: "./build"
@@ -132,14 +152,13 @@ gulp.task('server', function() {
         port: 8080
     });
 });
+
 // Сжатие изображений
 gulp.task('image', function() {
     gulp.src(path.src.images)
         .pipe(imagemin())
         .pipe(gulp.dest(path.build.images))
 });
+
 // Команда Gulp
-gulp.task('default', ['build'], function() {
-    gulp.start('server');
-    gulp.start('watch');
-});
+gulp.task('default', ['watch']);
