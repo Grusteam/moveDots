@@ -164,7 +164,8 @@ gulp.task('server', ['build'], function() {
         },
 
         middleware: function(req, res, next) {
-            // Нужен для редиректа с ссылок без указания расширения файла: https://vinaygopinath.me/blog/tech/url-redirection-with-browsersync/
+            // Нужен для редиректа всех ссылок (кроме ресурсов) на index.html: https://vinaygopinath.me/blog/tech/url-redirection-with-browsersync/
+            // console.log('req.url', req.url);
             
             /*if (!spa) { 
             // временно отключил. Проверить необходимость. 
