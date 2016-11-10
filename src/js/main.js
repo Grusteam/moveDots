@@ -1,39 +1,24 @@
+/* eslint-disable */
+
 $(function() {
-	/*page.base('/');
-	
-	page('/', function() {
-		console.log('index');
-	});
-	
-	page('/route1', function() {
-		console.log('route1');
-	});
-	
-	page('/route/:type', function(event) {
-		console.log('route/type', 'type');
-	});
-	
-	page();*/
-	
 	var routes = {
-		// a route which assigns the function `bark`.
 		'/': function() {
 			console.log('index');
 		},
-		'/route1': function() {
-			console.log('r1');
+		'/feedback': function() {
+			console.log('feedback');
+		},
+		'/feedback/user': function() {
+			console.log('/feedback/user');
 		},
 		'/route/:type': function(type) {
-			console.log('r, type', type);
+			console.log('param:', type);
 		}
 	};
 	
 	var router = Router(routes).configure({
 		html5history: true
-	});
-	
-	router.init();
-	
+	}).init();
 	
 	
 	$('.js-route').on('click', function(event) {
