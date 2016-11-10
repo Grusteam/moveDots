@@ -5,6 +5,7 @@ var gulp        = require('gulp'),
     cleanCSS    = require('gulp-clean-css'),
     rigger      = require('gulp-rigger'),
     postcss     = require('gulp-postcss'),
+    less        = require('gulp-less')
     sourcemaps  = require('gulp-sourcemaps'),
     imagemin    = require('gulp-imagemin'),
     gnf         = require('gulp-npm-files'),
@@ -61,6 +62,8 @@ gulp.task('html:build', function () {
 
 // Сборка стилей
 gulp.task('style:build', function () {
+    var isLess = process.argv.indexOf('--less') > -1;
+    
     gulp.src(path.src.styles)
         .pipe(sourcemaps.init())
         .pipe(postcss([ require('autoprefixer'), require('precss') ]))
