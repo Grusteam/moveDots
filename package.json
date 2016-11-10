@@ -8,7 +8,9 @@
   },
   "author": "steamdrive.ru",
   "license": "ISC",
-  "dependencies": {},
+  "dependencies": {
+    "slick-carousel": "^1.6.0"
+  },
   "devDependencies": {
     "autoprefixer": "^6.5.1",
     "browser-sync": "^2.17.5",

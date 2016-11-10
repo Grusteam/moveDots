@@ -10,7 +10,7 @@ var gulp        = require('gulp'),
     gnf         = require('gulp-npm-files'),
     rimraf      = require('rimraf'),
     browserSync = require('browser-sync').create();
-    
+
 // Пути
 var path = {
     build: { //Тут мы укажем куда складывать готовые после сборки файлы
@@ -23,7 +23,7 @@ var path = {
         fonts:   'build/fonts/',
         modules: 'build/node_modules'
     },
-    
+
     src: { //Пути откуда брать исходники
         html:    'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
         js:      'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
@@ -34,7 +34,7 @@ var path = {
         fonts:   'src/fonts/**/*.*',
         favicon: 'src/favicon.png'
     },
-    
+
     watch: { //Тут мы укажем, за изменением каких файлов мы хотим наблюдать
         html:   'src/**/*.html',
         js:     'src/js/**/*.js',
@@ -43,7 +43,7 @@ var path = {
         images: 'src/images/**/*.*',
         fonts:  'src/fonts/**/*.*'
     },
-    
+
     clean: './build'
 };
 
@@ -53,7 +53,7 @@ gulp.task('html:build', function () {
         .pipe(rigger())
         .pipe(gulp.dest(path.build.html)) //Выплюнем их в папку build
         .pipe(browserSync.stream());
-        
+
     gulp.src(path.src.favicon)
         .pipe(gulp.dest('build/'));
 });
@@ -130,7 +130,7 @@ gulp.task('watch', ['server'], function(){
     gulp.watch([path.watch.js, path.watch.data], ['js:build']);
     gulp.watch([path.watch.images], ['image:build']);
     gulp.watch([path.watch.fonts], ['fonts:build']);
-    
+
     gulp.watch('./package.json', function(event) {
         if (event.path.indexOf('package.json') > -1) {
             gulp.start('re-module');
@@ -145,10 +145,42 @@ gulp.task('clean', function (cb) {
 
 // Запуск сервера
 gulp.task('server', ['build'], function() {
-    browserSync.init({ 
+    var
+        argv = process.argv, // Берем аргументы из строки запуска команды
+        open = argv.indexOf('--open') > -1,
+        spa  = argv.indexOf('--spa') > -1,
+        routes = {
+            '/test': '/index.html',
+        };
+
+    console.log('argv', argv);
+
+    browserSync.init({
+        open: open,
+
         server: {
-            baseDir: "./build"
+            baseDir: './build',
+            routes: routes
         },
+
+        middleware: function(req, res, next) {
+            // Нужен для редиректа с ссылок без указания расширения файла: https://vinaygopinath.me/blog/tech/url-redirection-with-browsersync/
+            
+            /*if (!spa) { 
+            // временно отключил. Проверить необходимость. 
+            // В данном случае будут работать все ссылки на файлы + те, что прописаны в роуте
+                return next();
+            }*/
+
+            for (var key in routes) {
+                if (req.url === key) {
+                    req.url = routes[key];
+                }
+            }
+
+            return next();
+        },
+
         port: 8080
     });
 });
