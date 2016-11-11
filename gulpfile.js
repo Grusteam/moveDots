@@ -1,18 +1,18 @@
 'use strict';
 
 // Поключение зависимостей
-var gulp        = require('gulp'),
-    cleanCSS    = require('gulp-clean-css'),
-    rigger      = require('gulp-rigger'),
-    postcss     = require('gulp-postcss'),
-    less        = require('gulp-less'),
-    sourcemaps  = require('gulp-sourcemaps'),
-    imagemin    = require('gulp-imagemin'),
-    gnf         = require('gulp-npm-files'),
-    rimraf      = require('rimraf'),
-    browserSync = require('browser-sync').create(),
-    spa         = require('browser-sync-spa');
-
+var gulp         = require('gulp'),
+    rigger       = require('gulp-rigger'),
+    mincss       = require('gulp-cssnano'),
+    autoprefixer = require('gulp-autoprefixer'),
+    sourcemaps   = require('gulp-sourcemaps'),
+    imagemin     = require('gulp-imagemin'),
+    gnf          = require('gulp-npm-files'),
+    rimraf       = require('rimraf'),
+    browserSync  = require('browser-sync').create(),
+    less         = require('gulp-less'),
+    spa          = require('browser-sync-spa');
+  
 // Пути
 var path = {
     build: { //Тут мы укажем куда складывать готовые после сборки файлы
@@ -27,21 +27,22 @@ var path = {
     },
 
     src: { //Пути откуда брать исходники
-        html:    'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
-        js:      'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
-        data:    'src/data/*.json', //Папка для тестовых данных в формате json
-        styles:  'src/styles/*.css',
-        content: 'src/content/**/*.*',
-        images:  'src/images/**/*.*', //Синтаксис images/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
-        fonts:   'src/fonts/**/*.*',
-        favicon: 'src/favicon.png'
+        html:     'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
+        js:       'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
+        data:     'src/data/*.json', //Папка для тестовых данных в формате json
+        styles:   'src/styles/*.less',
+        lessTemp: 'src/styles/temporary',
+        content:  'src/content/**/*.*',
+        images:   'src/images/**/*.*', //Синтаксис images/**/*.* означает - взять все файлы всех расширений из папки и из вложенных каталогов
+        fonts:    'src/fonts/**/*.*',
+        favicon:  'src/favicon.png'
     },
 
     watch: { //Тут мы укажем, за изменением каких файлов мы хотим наблюдать
         html:   'src/**/*.html',
         js:     'src/js/**/*.js',
         data:   'src/data/*.json',
-        styles: 'src/styles/**/*.css',
+        styles: 'src/styles/**/*.less',
         images: 'src/images/**/*.*',
         fonts:  'src/fonts/**/*.*'
     },
@@ -62,12 +63,13 @@ gulp.task('html:build', function () {
 
 // Сборка стилей
 gulp.task('style:build', function () {
-    var isLess = process.argv.indexOf('--less') > -1;
-    
     gulp.src(path.src.styles)
         .pipe(sourcemaps.init())
-        .pipe(postcss([ require('autoprefixer'), require('precss') ]))
-        .pipe(cleanCSS())
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions']
+        }))
+        .pipe(less())
+        .pipe(mincss())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(path.build.styles))
         .pipe(browserSync.stream());
@@ -151,7 +153,7 @@ gulp.task('clean', function (cb) {
 gulp.task('server', ['build'], function() {
     var
         argv = process.argv, // Берем аргументы из строки запуска команды
-        open = argv.indexOf('--open') > -1;
+        open = (argv.indexOf('--dev') > -1) ? false: true;
 
     browserSync.use(spa({
         history: {
