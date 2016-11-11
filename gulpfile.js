@@ -9,7 +9,8 @@ var gulp        = require('gulp'),
     imagemin    = require('gulp-imagemin'),
     gnf         = require('gulp-npm-files'),
     rimraf      = require('rimraf'),
-    browserSync = require('browser-sync').create();
+    browserSync = require('browser-sync').create(),
+    spa         = require('browser-sync-spa');
 
 // Пути
 var path = {
@@ -147,40 +148,21 @@ gulp.task('clean', function (cb) {
 gulp.task('server', ['build'], function() {
     var
         argv = process.argv, // Берем аргументы из строки запуска команды
-        open = argv.indexOf('--open') > -1,
-        spa  = argv.indexOf('--spa') > -1,
-        routes = {
-            '/test': '/index.html',
-        };
+        open = argv.indexOf('--open') > -1;
 
-    console.log('argv', argv);
+    browserSync.use(spa({
+        history: {
+            index: '/index.html'
+        }
+    }));
 
     browserSync.init({
         open: open,
-
+        
         server: {
-            baseDir: './build',
-            routes: routes
+            baseDir: './build'
         },
-
-        middleware: function(req, res, next) {
-            // Нужен для редиректа с ссылок без указания расширения файла: https://vinaygopinath.me/blog/tech/url-redirection-with-browsersync/
-            
-            /*if (!spa) { 
-            // временно отключил. Проверить необходимость. 
-            // В данном случае будут работать все ссылки на файлы + те, что прописаны в роуте
-                return next();
-            }*/
-            
-            for (var key in routes) {
-                if (req.url === key) {
-                    req.url = routes[key];
-                }
-            }
-
-            return next();
-        },
-
+        
         port: 8080
     });
 });
