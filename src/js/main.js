@@ -20,8 +20,7 @@ var App = {
 			'/search': {
 				'\/(.*)': {
 					on: function(request) {
-						var params = decodeURI(request).split('&');
-						console.log(':request:', params);
+						App.parseParams(request);
 					}
 				}
 			}
@@ -30,6 +29,19 @@ var App = {
 		router = Router(routes).configure({
 			html5history: true
 		}).init();
+	},
+	
+	parseParams: function(request) {
+		var 
+			params = decodeURI(request).split('&'),
+			query  = {};
+			
+		for (var i = 0; i < params.length; i++) {
+			var arr = params[i].split('=');
+			query[arr[0]] = arr[1];
+		}
+		
+		return query;
 	}
 }
 
