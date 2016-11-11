@@ -171,7 +171,7 @@ gulp.task('server', ['build'], function() {
             // В данном случае будут работать все ссылки на файлы + те, что прописаны в роуте
                 return next();
             }*/
-
+            
             for (var key in routes) {
                 if (req.url === key) {
                     req.url = routes[key];
