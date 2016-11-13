@@ -153,7 +153,7 @@ gulp.task('clean', function (cb) {
 gulp.task('server', ['build'], function() {
     var
         argv = process.argv, // Берем аргументы из строки запуска команды
-        open = (argv.indexOf('--dev') > -1) ? false: true;
+        open = argv.indexOf('--dev') > -1;
 
     browserSync.use(spa({
         history: {
