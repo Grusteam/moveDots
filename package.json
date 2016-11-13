@@ -10,7 +10,6 @@
   "license": "ISC",
   "dependencies": {
     "director": "^1.2.8",
-    "page": "^1.7.1",
     "slick-carousel": "^1.6.0"
   },
   "devDependencies": {
