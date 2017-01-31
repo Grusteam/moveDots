@@ -20,7 +20,7 @@ var App = {
 			'/search': {
 				'\/(.*)': {
 					on: function(request) {
-						App.parseParams(request);
+						console.log('request', App.parseParams(request));
 					}
 				}
 			}
