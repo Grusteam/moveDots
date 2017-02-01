@@ -9,6 +9,7 @@ var gulp         = require('gulp'),
     imagemin     = require('gulp-imagemin'),
     gnf          = require('gulp-npm-files'),
     rimraf       = require('rimraf'),
+    fs           = require('fs'),
     browserSync  = require('browser-sync').create(),
     less         = require('gulp-less'),
     spa          = require('browser-sync-spa');
@@ -163,6 +164,25 @@ gulp.task('server', ['build'], function() {
 
     browserSync.init({
         open: open,
+        
+        middleware: [{
+            route: "/api",
+            handle: function (request, respond, next) {
+                var 
+                    body     = '',
+                    filePath = __dirname + '\\src\\data\\data.json';
+                
+                request.on('data', function(data) {
+                    body += data;
+                });
+
+                request.on('end', function (){
+                    fs.writeFile(filePath, body, function() {
+                        respond.end(body);
+                    });
+                });
+            }
+        }],
         
         server: {
             baseDir: './build'
