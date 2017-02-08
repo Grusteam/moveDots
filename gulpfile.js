@@ -86,12 +86,10 @@ gulp.task('fonts:build', function() {
 // Сборка и сжатие изображений
 gulp.task('image:build', function () {
     gulp.src(path.src.images) //Выберем наши картинки
-        .pipe(gulp.dest(path.build.images)) //И бросим в build
-        .pipe(browserSync.stream());
+        .pipe(gulp.dest(path.build.images)); //И бросим в build
 
     gulp.src(path.src.content) //Выберем наши картинки
-        .pipe(gulp.dest(path.build.content)) //И бросим в build
-        .pipe(browserSync.stream());
+        .pipe(gulp.dest(path.build.content)); //И бросим в build
 });
 
 // Сборка js и json
@@ -204,4 +202,4 @@ gulp.task('image', function() {
 });
 
 // Команда Gulp
-gulp.task('default', ['watch']);
+gulp.task('default', ['watch', 'js:data']);
