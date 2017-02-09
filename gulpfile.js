@@ -1,5 +1,3 @@
-'use strict';
-
 // Поключение зависимостей
 var gulp         = require('gulp'),
     rigger       = require('gulp-rigger'),
