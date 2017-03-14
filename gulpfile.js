@@ -27,9 +27,9 @@ var path = {
     },
 
     src: { //Пути откуда брать исходники
-        html:     'src/*.html', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
+        html:     'src/*.{html,php}', //Синтаксис src/*.html говорит gulp что мы хотим взять все файлы с расширением .html
         js:       'src/js/*.js',//В стилях и скриптах нам понадобятся только main файлы
-        data:     'src/data/*.json', //Папка для тестовых данных в формате json
+        data:     'src/data/**/*.json', //Папка для тестовых данных в формате json
         styles:   'src/styles/*.less',
         lessTemp: 'src/styles/temporary',
         content:  'src/content/**/*.*',
@@ -39,9 +39,9 @@ var path = {
     },
 
     watch: { //Тут мы укажем, за изменением каких файлов мы хотим наблюдать
-        html:   'src/**/*.html',
+        html:   'src/**/*.{html,php}',
         js:     'src/js/**/*.js',
-        data:   'src/data/*.json',
+        data:   'src/data/**/*.json',
         styles: 'src/styles/**/*.less',
         images: 'src/images/**/*.*',
         fonts:  'src/fonts/**/*.*'
@@ -163,6 +163,7 @@ gulp.task('server', ['build'], function() {
 
     browserSync.init({
         open: open,
+        notify: false,
         
         server: {
             baseDir: './build'

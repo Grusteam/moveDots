@@ -6,13 +6,13 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "steamdrive.ru",
+  "author": "uniquite.com",
   "license": "ISC",
   "dependencies": {
-    "director": "^1.2.8",
     "slick-carousel": "^1.6.0"
   },
   "devDependencies": {
+    "bootstrap": "^3.3.7",
     "browser-sync": "^2.17.5",
     "browser-sync-spa": "^1.0.3",
     "gulp": "^3.9.1",
@@ -30,8 +30,11 @@
   "stylelint": {
     "extends": "stylelint-config-standard",
     "rules": {
+      "number-leading-zero": null,
+      "no-eol-whitespace": null,
+      "block-no-empty": null,
+      
       "indentation": "tab",
-      "number-leading-zero": "never",
       "string-quotes": "double",
       "property-no-unknown": [
         true,
