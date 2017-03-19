@@ -42,6 +42,7 @@ var path = {
         js:     'src/js/**/*.js',
         data:   'src/data/**/*.json',
         styles: 'src/styles/**/*.less',
+        images: 'src/content/**/*.*',
         images: 'src/images/**/*.*',
         fonts:  'src/fonts/**/*.*'
     },
