@@ -177,8 +177,6 @@ gulp.task('server', ['build'], function() {
 
                 request.on('end', function (){
                     fs.writeFile(filePath, body, function() {
-                        
-                        
                         respond.end(body);
                     });
                 });
