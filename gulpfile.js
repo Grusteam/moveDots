@@ -1,5 +1,3 @@
-'use strict';
-
 // Поключение зависимостей
 var gulp         = require('gulp'),
     rigger       = require('gulp-rigger'),
@@ -9,6 +7,7 @@ var gulp         = require('gulp'),
     imagemin     = require('gulp-imagemin'),
     gnf          = require('gulp-npm-files'),
     rimraf       = require('rimraf'),
+    fs           = require('fs'),
     browserSync  = require('browser-sync').create(),
     less         = require('gulp-less'),
     spa          = require('browser-sync-spa');
@@ -85,23 +84,22 @@ gulp.task('fonts:build', function() {
 // Сборка и сжатие изображений
 gulp.task('image:build', function () {
     gulp.src(path.src.images) //Выберем наши картинки
-        .pipe(gulp.dest(path.build.images)) //И бросим в build
-        .pipe(browserSync.stream());
+        .pipe(gulp.dest(path.build.images)); //И бросим в build
 
     gulp.src(path.src.content) //Выберем наши картинки
-        .pipe(gulp.dest(path.build.content)) //И бросим в build
-        .pipe(browserSync.stream());
+        .pipe(gulp.dest(path.build.content)); //И бросим в build
 });
 
 // Сборка js и json
 gulp.task('js:build', function () {
-    gulp.src(path.src.data) //Найдем наш main файл
-        .pipe(gulp.dest(path.build.data))
-        .pipe(browserSync.stream());
-
     gulp.src(path.src.js) //Найдем наш main файл
         .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
         .pipe(browserSync.stream());
+});
+
+gulp.task('js:data', function () {
+    gulp.src(path.src.data) //Найдем наш main файл
+        .pipe(gulp.dest(path.build.data));
 });
 
 // Перенос зависимостей в build
@@ -133,7 +131,8 @@ gulp.task('build', [
 gulp.task('watch', ['server'], function(){
     gulp.watch([path.watch.html], ['html:build']);
     gulp.watch([path.watch.styles], ['style:build']);
-    gulp.watch([path.watch.js, path.watch.data], ['js:build']);
+    gulp.watch([path.watch.js], ['js:build']);
+    gulp.watch([path.watch.data], ['js:data']);
     gulp.watch([path.watch.images], ['image:build']);
     gulp.watch([path.watch.fonts], ['fonts:build']);
 
@@ -165,6 +164,27 @@ gulp.task('server', ['build'], function() {
         open: open,
         notify: false,
         
+        middleware: [{
+            route: "/api",
+            handle: function (request, respond, next) {
+                var 
+                    body     = '',
+                    filePath = __dirname + '\\src\\data\\data.json';
+                
+                request.on('data', function(data) {
+                    body += data;
+                });
+
+                request.on('end', function (){
+                    fs.writeFile(filePath, body, function() {
+                        
+                        
+                        respond.end(body);
+                    });
+                });
+            }
+        }],
+        
         server: {
             baseDir: './build'
         },
@@ -181,4 +201,4 @@ gulp.task('image', function() {
 });
 
 // Команда Gulp
-gulp.task('default', ['watch']);
+gulp.task('default', ['watch', 'js:data']);
