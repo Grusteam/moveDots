@@ -6,35 +6,26 @@
 </head>
 <body>
 	//= images/svg-icons.html
-	<div class="wrapper">
+	<div class="wrapper" style="padding: 20px;">
 		//= templates/header.html
-		<h1>Head <a href="/test.html">link</a></h1>
-		
 		<div class="search">
-			<input type="email" placeholder="Email" class="search__input">
-			<button class="search__btn">Sub</button>
+			<button type="button" class="search__btn" id="send-data">Save data to FILE SYSTEM</button>
+			<div id="saved-data" class="saved-data"></div>
 		</div>
 		
-		<div style="padding: 20px;">
-			<h2>Router links test</h2>
+		<div>
+			<h2>Loaded data from file:</h2>
+			<div id="data"></div>
 			
-			<div style="margin-bottom: 10px;">
-				<a href="/feedback" class="js-route">route1</a>
+			<h2>Prepared data:</h2>
+			
+			<div>
+				<div id="parsed-data">
+					<div data-bind="name"></div>
+					<div data-bind="surname"></div>
+					<div data-bind="owner"></div>
+				</div>
 			</div>
-			
-			<div style="margin-bottom: 10px;">
-				<a href="/feedback/user" class="js-route">feedback/:type</a>
-			</div>
-			
-			<div style="margin-bottom: 10px;">
-				<a href="/search/tags=2,3,5&query=html css js" class="js-route">/search/:request</a>
-			</div>
-			
-			<svg style="width: 184px; height: 184px;">
-				<path 
-					id="arc1" fill="none" stroke-width="15" stroke-linejoin="round" stroke-linecap="round" stroke="#446688"
-				/>
-			</svg>
 		</div>
 		
 		//= templates/footer.html
