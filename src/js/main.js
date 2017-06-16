@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 $(function() {
 	$.ajax('/data/data.json', {
 		type: 'GET',

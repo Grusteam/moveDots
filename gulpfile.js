@@ -1,5 +1,6 @@
 // Поключение зависимостей
 var gulp         = require('gulp'),
+    babel        = require('gulp-babel'),
     rigger       = require('gulp-rigger'),
     mincss       = require('gulp-cssnano'),
     autoprefixer = require('gulp-autoprefixer'),
@@ -94,6 +95,11 @@ gulp.task('image:build', function () {
 // Сборка js и json
 gulp.task('js:build', function () {
     gulp.src(path.src.js) //Найдем наш main файл
+        .pipe(sourcemaps.init())
+        .pipe(babel({
+            presets: ['es2015']
+        }))
+        .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(path.build.js)) //Выплюнем готовый файл в build
         .pipe(browserSync.stream());
 });

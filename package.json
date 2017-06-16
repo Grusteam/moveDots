@@ -9,9 +9,13 @@
   "author": "uniquite.com",
   "license": "ISC",
   "dependencies": {
-    "slick-carousel": "^1.6.0"
   },
   "devDependencies": {
+    "babel-core": "^6.24.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-es2015": "^6.24.1",
+    "gulp-babel": "^6.1.2",
+    
     "bootstrap": "^3.3.7",
     "browser-sync": "^2.17.5",
     "browser-sync-spa": "^1.0.3",
