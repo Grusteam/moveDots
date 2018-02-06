@@ -52,10 +52,8 @@
 			opacity: 0;
 
 			border: 2px solid #fff;
-			/* background-color: #fff; */
 
 			transition: transform .3s;
-			/* transition: opacity .3s; */
 
 			animation-duration: .7s;
 
@@ -67,10 +65,7 @@
 
 		.square:hover > .square_white {
 			transform: scale(.8);
-			/* opacity: 1; */
 		}
-
-		/* #square_0:hover > #square_white_0 {transform: scale(.8);} */
 
 		.path {
 			fill-rule: evenodd;
@@ -102,7 +97,6 @@
 			fill: none;
 			stroke: #f00;
 			stroke-miterlimit: 10;
-			/*fill: #f00;*/
 			stroke-width: 25;
 			opacity: 0;
 		}
@@ -142,14 +136,14 @@
 			animation-delay: calc( .05s * 5);
 		}
 
-		/* #square_0 + path { */
-
-		#square_white_0 { animation-delay: calc(.05s * 0); }
-		#square_white_1 { animation-delay: calc(.05s * 1); }
-		#square_white_2 { animation-delay: calc(.05s * 2); }
-		#square_white_3 { animation-delay: calc(.05s * 3); }
-		#square_white_4 { animation-delay: calc(.05s * 4); }
-		#square_white_5 { animation-delay: calc(.05s * 5); }
+		
+		/* square opacity */
+		#square_white_0 { animation-delay: calc(.1s + .05s * 4); }
+		#square_white_1 { animation-delay: calc(.1s + .05s * 5); }
+		#square_white_2 { animation-delay: calc(.1s + .05s * 6); }
+		#square_white_3 { animation-delay: calc(.1s + .05s * 7); }
+		#square_white_4 { animation-delay: calc(.1s + .05s * 8); }
+		#square_white_5 { animation-delay: calc(.1s + .05s * 9); }
 
 		@keyframes myAnimation {
 			0% {
@@ -324,38 +318,73 @@
 	</div>
 
 	<script>
-		/*config*/
-		const
-			frameRate = 60, //fps
-			speed = [.4, .5, .6, .7, .8, .9], //seconds
-			delays = [.3, 0.4, 0.5, 0.6, 0.7, 0.8], //seconds
-			// startPos = [0, 30, 20, 10, 40, 90], // 0-100%
-			stopPos = [90, 15, 40, 60, 70, 85], // 0-100%
-			maxLength = Math.max(...speed) + Math.max(...delays);
-
-		/* ..- -. .. --.- ..- .. - . .-.-.- -.-. --- -- */
+		let
+			doAction = true,
+			mainCount = 1;
 
 		/*get all Dom els*/
 		const
 			allPaths = document.querySelectorAll('.path'),
 			allSquares = document.querySelectorAll('.square');
 
+		/*config*/
+		const
+			frameRate = 60, //fps
+			/*countedDuration*/
+			minDuration = .7,
+			durationIncrement = 0.05,
+			/*delay*/
+			startDelay = 0.3,
+			delayIncrement = 0.08,
+			/*stops*/
+			stopPos = [90, 15, 40, 60, 70, 85], // 0-100%
+			/*service*/
+			deduct = allPaths.length - 1,
+			maxLength = minDuration + durationIncrement * deduct + startDelay + delayIncrement * deduct;
+
+		/* ..- -. .. --.- ..- .. - . .-.-.- -.-. --- -- */
+
 		/*each pair*/
-		function workWithAllPaths(allPaths, ticks) {
+		function workWithAllPaths(allPaths, mainCount) {
 			// console.log('render');
+			// console.log('mainCount', mainCount);
+
+			/*for each dot*/
 			for (let i = 0; i < allPaths.length; i++) {
 				const
-					percentOfPathTime = (100 / speed[i] * (ticks / frameRate)) / 100,
-					percent = ticks / frameRate < delays[i] ? (stopPos[i] - 50 >= 0 ? stopPos[i] - 50 : 0) / 100 : ((100 / speed[i] * ((ticks - delays[i] * frameRate) / frameRate)) / 100) + (stopPos[i] - 50 >= 0 ? stopPos[i] - 50 : 0) / 100,
-					percentAgainstStopPos = percent * 100 > stopPos[i] ? stopPos[i] / 100 : percent,
-					path = allPaths[i],
-					dot = allSquares[i];
+					delay = startDelay + delayIncrement * i,
+					countedDuration = minDuration + durationIncrement * i,
+					delayedCount = mainCount - frameRate * delay,
+					animationDuration = frameRate * countedDuration,
+					clearPortion = mainCount / animationDuration;
+						
+				let
+					delayedPortion = delayedCount / animationDuration;
 
-				moveDot(path, dot, percentAgainstStopPos);
+				/*delay*/
+				if (mainCount / frameRate < delay) {
+					delayedPortion = 0;
+				}
+
+				/*over 1*/
+				if (delayedPortion > 1) {
+					delayedPortion = 1;
+				}
+
+				const
+					path = allPaths[i],
+					dot = allSquares[i],
+					/*ease*/
+					modifiedPortion = modifyPercent('easeInOutQuint', delayedPortion),
+					/*stop*/
+					stoppedPortion = modifiedPortion - (modifiedPortion * ((100 - stopPos[i]) / 100));
+
+				/*act*/
+				moveDot(path, dot, stoppedPortion);
 			}
 		}
 
-		function modifyPercent(t) {
+		function modifyPercent(name, t) {
 			const easingFunctions = {
 				linear: function (t) { return t },
 				easeInQuad: function (t) { return t*t },
@@ -372,27 +401,20 @@
 				easeInOutQuint: function (t) { return t<.5 ? 16*t*t*t*t*t : 1+16*(--t)*t*t*t*t }
 			};
 
-			console.log('t', t);
-			// return x;
-			return easingFunctions.easeInOutQuart(t);
+			return easingFunctions[name](t);
 		}
 
 		/*move dot along path*/
 		function moveDot(path, dot, prcnt) {
 			const
-				pathLength = Math.floor( path.getTotalLength() ),
-				percentModified = prcnt;
+				pathLength = Math.floor( path.getTotalLength() );
 
-			percent = (percentModified * pathLength);
-
+			percent = (prcnt * pathLength);
 
 			/*coords*/
 			pt = path.getPointAtLength(percent);
 			pt.x = pt.x;
 			pt.y = pt.y;
-
-			// console.log('pt.x', pt.x);
-			// console.log('Math.round(pt.x)', Math.round(pt.x));
 
 			dot.style.webkitTransform = 'translate('+pt.x+'px,'+pt.y+'px)';
 		}
@@ -402,11 +424,14 @@
 			const
 				ticks = requestAnimationFrame( animate );
 
-			if (ticks <= maxLength * frameRate) {
-				workWithAllPaths(allPaths, ticks);
+			if (doAction && mainCount <= maxLength * frameRate) {
+				workWithAllPaths(allPaths, mainCount);
+				mainCount++;
 			}
 		})()
-
 	</script>
+	<button type="button" onclick="doAction = !doAction">on / off</button>
+	<button type="button" onclick="doAction = true">on</button>
+	<button type="button" onclick="doAction = false">off</button>
 </body>
 </html>
